@@ -820,7 +820,7 @@ WHERE
 
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 300 List Public Role Privileges   </h3>
+prompt <h3>   Check - 300 List Objects Priviliges Granted to Public    </h3>
 SET MARKUP HTML ON
 	
 SELECT
@@ -836,6 +836,33 @@ WHERE
 	AND A.OWNER = B.USERNAME
 	AND B.ORACLE_MAINTAINED <> 'Y';
 
+	
+SET MARKUP HTML OFF
+prompt <h3>   Check - 302 List  Roles Granted to Public   </h3>
+SET MARKUP HTML ON
+
+SELECT
+	GRANTEE,
+	GRANTED_ROLE
+FROM
+	DBA_ROLE_PRIVS
+WHERE
+	GRANTEE = 'PUBLIC';
+
+
+SET MARKUP HTML OFF
+prompt <h3>   Check - 304 List  System Privileges  Granted to Public   </h3>
+SET MARKUP HTML ON	
+
+SELECT
+	GRANTEE,
+	PRIVILEGE
+FROM
+	DBA_SYS_PRIVS
+WHERE
+	GRANTEE = 'PUBLIC';
+	
+	
 SET MARKUP HTML OFF
 prompt <h3>   Check - 310 List System Priviliges with Admin Option   </h3>
 SET MARKUP HTML ON
