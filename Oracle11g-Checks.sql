@@ -1002,7 +1002,7 @@ WHERE
 	
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 310 List System Priviliges with Admin Option   </h3>
+prompt <h3>   Check - 310 List Granted System Priviliges to Users with Admin Option   </h3>
 SET MARKUP HTML ON
 
 SELECT
@@ -1057,7 +1057,7 @@ WHERE
 
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 320 List Roles Granted with Admin Option   </h3>
+prompt <h3>   Check - 320 List Granted  System Priviliges to Roles with Admin Option   </h3>
 SET MARKUP HTML ON	
 
 SELECT
@@ -1078,9 +1078,82 @@ WHERE
 		'DV_OWNER'
 	);
 
+		
 	
 SET MARKUP HTML OFF
-prompt <h3>   Check - 325 List Object Privileges with Grant Option   </h3>
+prompt <h3>   Check - 322 List Roles Granted to Users   with Admin Option   </h3>
+SET MARKUP HTML ON	
+
+SELECT
+	A.GRANTEE,
+	A.GRANTED_ROLE,
+A.ADMIN_OPTION
+FROM
+	DBA_ROLE_PRIVS A,
+	DBA_USERS B
+WHERE
+	A.ADMIN_OPTION = 'YES'
+	AND A.GRANTEE = B.USERNAME
+	AND A.GRANTEE NOT IN(
+		'ANONYMOUS',
+		'CTXSYS',
+		'DBSNMP',
+		'EXFSYS',
+		'LBACSYS',
+		'MDSYS',
+		'MGMT_VIEW',
+		'OLAPSYS',
+		'OWBSYS',
+		'ORDPLUGINS',
+		'ORDSYS',
+		'OUTLN',
+		'SI_INFORMTN_SCHEMA',
+		'SYS',
+		'SYSMAN',
+		'SYSTEM',
+		'TSMSYS',
+		'WK_TEST',
+		'WKSYS',
+		'WKPROXY',
+		'WMSYS',
+		'XDB',
+		'APEX_PUBLIC_USER',
+		'DIP',
+		'FLOWS_30000',
+		'FLOWS_FILES',
+		'MDDATA',
+		'ORACLE_OCM',
+		'SPATIAL_CSW_ADMIN_USR',
+		'SPATIAL_WFS_ADMIN_USR',
+		'XS$NULL',
+		'OWBSYS_AUDIT',
+		'ORDDATA',
+		'APEX_030200',
+		'APPQOSSYS',
+		'DVSYS',
+		'DVF'
+	);
+
+
+SET MARKUP HTML OFF
+prompt <h3>   Check - 324 List Roles Granted to Roles   with Admin Option   </h3>
+SET MARKUP HTML ON
+
+SELECT
+	A.GRANTEE,
+	A.GRANTED_ROLE,
+	A.ADMIN_OPTION
+FROM
+	DBA_ROLE_PRIVS A,
+	DBA_ROLES B
+WHERE
+	A.ADMIN_OPTION = 'YES'
+	AND A.GRANTEE = B.ROLE
+	AND A.GRANTEE NOT IN('DBA');
+
+
+SET MARKUP HTML OFF
+prompt <h3>   Check - 328 List Object Privileges with Grant Option   </h3>
 SET MARKUP HTML ON	
 	
 SELECT
