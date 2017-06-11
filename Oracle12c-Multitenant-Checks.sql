@@ -1,7 +1,8 @@
 /* 
 
-sqlplus system/oracle @Oracle11g-Checks.sql
-file:///D:/x/scripts/out.html
+Run this script   sqlplus system/password @Oracle12c-Multitenant-Checks.sql
+Output  filename is : out.html
+
 
  */
 
@@ -36,6 +37,9 @@ column PRIVILEGE format A15
 column IS_GRANT format A15
 column INVERT format A15
 column CONTAINER_NAME format A32
+column INVERTED_PRINCIPAL format A25
+column PRINCIPAL format A15
+column PRINCIPAL_TYPE format A25
 
 
 SET MARKUP HTML ON SPOOL ON PREFORMAT OFF ENTMAP ON -
@@ -1535,7 +1539,7 @@ SET MARKUP HTML ON
 SELECT
 	'ls -lrt '||FILE_NAME "Unix\Linux commands"
 FROM
-	DBA_DATA_FILES;
+	CDB_DATA_FILES;
 
 SET MARKUP HTML OFF
 
@@ -1546,7 +1550,7 @@ SET MARKUP HTML ON
 SELECT
 	'Icacls '||FILE_NAME "Windows commands"
 FROM
-	DBA_DATA_FILES;
+	CDB_DATA_FILES;
 
 	
 SET MARKUP HTML OFF
@@ -1597,7 +1601,8 @@ SET MARKUP HTML ON
 
 SELECT
 	NAME,
-	VALUE
+	VALUE,
+	CON_ID
 FROM
 	V$PARAMETER
 WHERE
@@ -1606,6 +1611,7 @@ WHERE
 		'AUDIT_SYS_OPERATIONS'
 	);
 
+
 SET MARKUP HTML OFF
 prompt <h3>   Check - 590  List Audited Privileges </h3>
 SET MARKUP HTML ON
@@ -1613,10 +1619,11 @@ SET MARKUP HTML ON
 SELECT
 	*
 FROM
-	DBA_PRIV_AUDIT_OPTS	
+	CDB_PRIV_AUDIT_OPTS
 ORDER BY
 	USER_NAME,
 	PRIVILEGE;
+
 
 SET MARKUP HTML OFF
 prompt <h3>   Check - 600  List Audited Statements </h3>
@@ -1625,10 +1632,11 @@ SET MARKUP HTML ON
 SELECT
 	*
 FROM
-	DBA_STMT_AUDIT_OPTS
+	CDB_STMT_AUDIT_OPTS
 ORDER BY
 	USER_NAME,
 	AUDIT_OPTION;
+
 
 SET MARKUP HTML OFF
 prompt <h3>   Check - 610  List Audited Objects </h3>
@@ -1637,7 +1645,7 @@ SET MARKUP HTML ON
 SELECT
 	*
 FROM
-	DBA_OBJ_AUDIT_OPTS
+	CDB_OBJ_AUDIT_OPTS
 ORDER BY
 	OWNER,
 	OBJECT_NAME;
@@ -1659,7 +1667,26 @@ SET MARKUP HTML ON
 SELECT
 	*
 FROM
-	ALL_AUDIT_POLICIES;
+	CDB_AUDIT_POLICIES;
+	
+SET MARKUP HTML OFF
+prompt <h3>   Check - 632  List Unified Policies  for each pluggable database run this </h3>
+SET MARKUP HTML ON
+
+SELECT
+	*
+FROM
+	AUDIT_UNIFIED_POLICIES;
+
+SET MARKUP HTML OFF
+prompt <h3>   Check - 634  List Unified Enabled Policies  for each pluggable database run this  </h3>
+SET MARKUP HTML ON
+
+SELECT
+	*
+FROM
+	AUDIT_UNIFIED_ENABLED_POLICIES;
+
 	
 SET MARKUP HTML OFF
 prompt <h3>   Check - 640  List Database Backups with RMAN </h3>
@@ -1735,48 +1762,66 @@ SET MARKUP HTML ON
 
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 670  List Database Links   </h3>
+prompt <h3>   Check - 670  List Database Links BURAYA KADAR  </h3>
 SET MARKUP HTML ON	
 
 SELECT
-	*
+	A.OWNER,
+	A.DB_LINK,
+	A.HOST,
+	A.CREATED,
+	A.CON_ID,
+	B.NAME CONTAINER_NAME
 FROM
-	DBA_DB_LINKS
+	CDB_DB_LINKS A,
+	V$CONTAINERS B
+WHERE
+	A.CON_ID = B.CON_ID(+)
 ORDER BY
-	HOST;
+	A.HOST;
 
 	
 SET MARKUP HTML OFF
 prompt <h3>   Check - 680  List PUBLIC Database Links   </h3>
 SET MARKUP HTML ON
 
+
 SELECT
-	*
+	A.OWNER,
+	A.DB_LINK,
+	A.HOST,
+	A.CREATED,
+	A.CON_ID,
+	B.NAME
 FROM
-	DBA_DB_LINKS
-WHERE 
-	OWNER = 'PUBLIC'
+	CDB_DB_LINKS A,
+	V$CONTAINERS B
+WHERE
+	A.OWNER = 'PUBLIC'
+	AND A.CON_ID = B.CON_ID(+)
 ORDER BY
-	HOST;
+	A.HOST;
 
-	
+
 SET MARKUP HTML OFF
-prompt <h3>   Check - 690  List ACL Definitions   </h3>
+prompt <h3>   Check - 695  List ACL Definitions   </h3>
 SET MARKUP HTML ON	
 	
 SELECT
 	*
 FROM
-	DBA_NETWORK_ACLS;
+	CDB_HOST_ACLS;
+
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 700  List ACE Definitions   </h3>
+prompt <h3>   Check - 705  List ACE Definitions   </h3>
 SET MARKUP HTML ON	
 
 SELECT
 	*
 FROM
-	DBA_NETWORK_ACL_PRIVILEGES;
+	CDB_HOST_ACES;
+
 	
 	
 	

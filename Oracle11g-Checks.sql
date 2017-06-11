@@ -1,7 +1,7 @@
 /* 
 
-sqlplus system/oracle @Oracle11g-Checks.sql
-file:///D:/x/scripts/out.html
+Run this script   sqlplus system/password  @Oracle11g-Checks.sql
+Output  filename is : out.html
 
  */
 
