@@ -3,6 +3,7 @@
 Run this script   sqlplus system/password  @Oracle11g-Checks.sql
 Output  filename is : out.html
 
+
  */
 
 set pagesize 2000
@@ -140,7 +141,7 @@ ORDER BY
 	ACCOUNT_STATUS DESC , USERNAME ASC;
  
 SET MARKUP HTML   OFF
-prompt <h3>   Check - 020 List Tablespace Test  </h3>
+prompt <h3>   Check - 020 List Permanent and Temporary Tablespaces  </h3>
 SET MARKUP HTML   ON
 
 SELECT
@@ -155,7 +156,7 @@ WHERE
 	);
 
 SET MARKUP HTML OFF
-prompt <h3>   Check - 030 Users which use SYSTEM and SYSAUX as a Default Tablespaces  </h3>
+prompt <h3>   Check - 030 Users which use SYSTEM and SYSAUX as Default Tablespaces  </h3>
 SET MARKUP HTML   ON
 
 SELECT
@@ -1756,7 +1757,7 @@ FROM
 
 SET MARKUP HTML OFF
 prompt <h3>   Check - 660  List Archived Logs at Primary Side   </h3>
-Prompt <p>  This script should be run on Primary Side </p>
+Prompt <p>  This script should  run on Primary Side </p>
 SET MARKUP HTML ON	
 	
 SELECT
