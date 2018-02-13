@@ -1,11 +1,11 @@
 /* 
 
-Run this script   sqlplus system/password  @Oracle12c-Checks.sql
-Output  filename is : out.html
+Run this script   sqlplus system/password@ServerName:Port/ServiceName  @Oracle12c-Checks.sql
+Output  filename is : DBName_yymmdd_Security_Checks.html
 
  */
 
-set pagesize 2000
+set pagesize 10000
 SET TERMOUT OFF
 SET RECSEP WRAPPED
 
@@ -61,20 +61,22 @@ BODY 'TEXT="#00000"' -
 TABLE 'WIDTH="60%" BORDER="1"'
 
 
-spool out.html
+column filename new_val filename
+select name||'_'||to_char(sysdate, 'yyyymmdd' )||'_Security_Checks.html' filename from dual , v$database;
+spool &filename
 
 set define off
 
 SET MARKUP HTML   OFF
 Prompt  <h2> Oracle 12c Security Check SQLs </h2>
 Prompt  <p>Open Source code from  https://github.com/yusufanilakduygu/Oracle-DB-Security-Checks </p>
-Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.0 2017 </p>
+Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.1 2018 </p>
 
 Prompt  <h3> Server and Database Information  </h3>
 SET MARKUP HTML   ON
 
 SELECT to_char(SYSDATE,'dd-mm-yyyy hh24:mi') REPORT_DATE,
-       SUBSTR (host_name, 1, 10) HOST_NAME,
+       SUBSTR (host_name, 1, 20) HOST_NAME,
        name,
        database_role,
        SUBSTR (open_mode, 1, 10) OPEN_MODE,
@@ -1497,8 +1499,8 @@ SELECT
 FROM
 	DBA_HOST_ACES;
 
-	
-	
+Prompt	
+Prompt *****  END OF SECURITY CHECKS REPORT  ****** 
 	
 spool off
 exit
