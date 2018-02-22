@@ -4,6 +4,11 @@ Run this script   sqlplus system/password@ServerName:Port/ServiceName  @Oracle12
 Output  filename is : DBName_yymmdd_Security_Checks.html
 
  */
+ 
+Prompt	
+Prompt *****  THE START OF SECURITY CHECKS REPORT  ****** 	
+Prompt *****  IT CAN TAKE TIME PLEASE WAIT.....    ****** 	
+Prompt
 
 set pagesize 10000
 SET TERMOUT OFF
@@ -70,7 +75,7 @@ set define off
 SET MARKUP HTML   OFF
 Prompt  <h2> Oracle 12c Security Check SQLs </h2>
 Prompt  <p>Open Source code from  https://github.com/yusufanilakduygu/Oracle-DB-Security-Checks </p>
-Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.1 2018 </p>
+Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.2 2018 </p>
 
 Prompt  <h3> Server and Database Information  </h3>
 SET MARKUP HTML   ON
@@ -105,8 +110,6 @@ SELECT
 	ORACLE_MAINTAINED
 FROM
 	DBA_USERS
-WHERE
-	ORACLE_MAINTAINED <> 'Y'
 ORDER BY
 	ACCOUNT_STATUS DESC,
 	USERNAME;
@@ -1503,4 +1506,5 @@ Prompt
 Prompt *****  END OF SECURITY CHECKS REPORT  ****** 
 	
 spool off
+
 exit

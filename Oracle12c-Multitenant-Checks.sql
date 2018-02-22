@@ -6,6 +6,12 @@ Output  filename is : DBName_yymmdd_Security_Checks.html
 
  */
 
+ 
+Prompt	
+Prompt *****  THE START OF SECURITY CHECKS REPORT  ****** 	
+Prompt *****  IT CAN TAKE TIME PLEASE WAIT.....    ****** 	
+Prompt
+
 set pagesize 10000
 SET TERMOUT OFF
 SET RECSEP WRAPPED
@@ -62,7 +68,7 @@ TABLE 'WIDTH="60%" BORDER="1"'
 
 
 column filename new_val filename
-select name||'_'||to_char(sysdate, 'yyyymmdd' )||'_Security_Checks.html' filename from dual , v$database;
+select name||'_'||SYS_CONTEXT('USERENV','CON_NAME')||'_'||to_char(sysdate, 'yyyymmdd' )||'_Security_Checks.html' filename from dual , v$database;
 spool &filename
 
 set define off
@@ -70,12 +76,12 @@ set define off
 SET MARKUP HTML   OFF
 Prompt  <h2> Oracle 12c Multitenant Database Security Check SQLs </h2>
 Prompt  <p>Open Source code from  https://github.com/yusufanilakduygu/Oracle-DB-Security-Checks </p>
-Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.1 2018 </p>
+Prompt  <p>This Report was developed by Y. Anil Akduygu ver 1.2 2018 </p>
 
 Prompt  <h3> Server and Database Information  </h3>
 SET MARKUP HTML   ON
 
-ALTER SESSION SET container = cdb$root;
+/* ALTER SESSION SET container = cdb$root; */
 
 SELECT to_char(SYSDATE,'dd-mm-yyyy hh24:mi') REPORT_DATE,
        SUBSTR (host_name, 1, 20) HOST_NAME,
@@ -88,6 +94,8 @@ SELECT to_char(SYSDATE,'dd-mm-yyyy hh24:mi') REPORT_DATE,
   FROM v$database, v$instance;
 
 SET MARKUP HTML   OFF
+
+
 prompt </b>
 prompt <h3>   Database version  </h3>
 SET MARKUP HTML   ON
@@ -95,6 +103,15 @@ SET MARKUP HTML   ON
 SELECT BANNER "DB VERSION INFORMATION" from v$version;
 
 SET MARKUP HTML   OFF
+
+
+prompt <h3>   Check - 020 Containers List  </h3>
+SET MARKUP HTML   ON
+
+SELECT CON_ID, NAME, OPEN_MODE FROM v$containers;
+
+SET MARKUP HTML OFF
+
 prompt </b>
 prompt <h3>   Check - 010 User List  </h3>
 SET MARKUP HTML   ON
@@ -102,19 +119,22 @@ SET MARKUP HTML   ON
 colum  expiry_date  format a15
 
 SELECT 
-       USERNAME,
-       ACCOUNT_STATUS,
-       CREATED,
-       ORACLE_MAINTAINED,
-       COMMON,
-       CON_ID
-  FROM CDB_USERS
-  WHERE
-  ORACLE_MAINTAINED <> 'Y'
-  ORDER BY ACCOUNT_STATUS,CON_ID DESC;
+       A.USERNAME,
+       A.ACCOUNT_STATUS,
+       A.CREATED,
+       A.ORACLE_MAINTAINED,
+       A.COMMON,
+       B.NAME CONTAINER_NAME
+  FROM 	
+	   CDB_USERS A,
+	   V$CONTAINERS B
+  ORDER BY A.ACCOUNT_STATUS,B.CON_ID DESC;
 
  
 SET MARKUP HTML   OFF
+
+
+
 prompt <h3>   Check - 020 List Permanent and Temporary Tablespaces  </h3>
 SET MARKUP HTML   ON
 
@@ -130,6 +150,9 @@ WHERE
 	);
 
 SET MARKUP HTML OFF
+
+
+
 prompt <h3>   Check - 030 Users which use SYSTEM and SYSAUX as  Default Tablespaces  </h3>
 SET MARKUP HTML   ON
 
@@ -211,11 +234,12 @@ prompt <h3>   Check - 060 List  Database Profiles Details  </h3>
 SET MARKUP HTML   ON
 
 SELECT
-	*
+	A.PROFILE,A.RESOURCE_NAME,A.RESOURCE_TYPE,A.LIMIT ,A.COMMON,B.NAME CONTAINER_NAME
 FROM
-	CDB_PROFILES
+	CDB_PROFILES A ,
+	V$CONTAINERS B
 ORDER BY
-	PROFILE;
+	A.PROFILE   ;
 
 
 	
